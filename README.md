@@ -10,8 +10,10 @@ implemented are:
 
 Dependencies:
 
-1. `markdown-mode`
-2. `html-to-markdown`
+1. `markdown-mode` from MELPA
+2. `html-to-markdown` from MELPA
+3. `oddmuse-curl` if you want to post to an Oddmuse wiki
+   ([https://alexschroeder.ch/cgit/oddmuse-curl/about/ source])
 
 This is what the UI looks like:
 
@@ -32,3 +34,8 @@ variable:
 		     "Web" "Oddmuse" "Wikis" "Blogs" "Text Mapper" "Hex Describe"
 		     "Switzerland"))
 ```
+
+If you want to change what `C-c C-c` does, you should take a look at
+`gplus-post-buffer`. Perhaps we can add an option that determines your
+target system and start collection a few functions to do whatever is
+needed? I realize not many people will be running an Oddmuse wiki.

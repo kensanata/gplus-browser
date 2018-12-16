@@ -131,10 +131,10 @@ of absolute paths.
   "Render JSON content as Markdown."
   (let ((text (cdr (assq 'content json)))
 	(reshared (cdr (assq 'resharedPost json)))
-	(comments (cdr (assq 'comments json)))
+	;; add comments from last to first
+	(comments (reverse (cdr (assq 'comments json))))
 	(list '("")))
-    ;; add comments from last to first
-    (dotimes (i (length (reverse comments)))
+    (dotimes (i (length comments))
       (let* ((comment (aref comments i))
 	     (author (cdr (assq 'author comment)))
 	     (display-name (or (cdr (assq 'displayName author)) "Unknown"))
@@ -154,11 +154,21 @@ of absolute paths.
 	(setq list (cons (format "[quote]\n%s\n\n– %s\n[/quote]\n"
 				 text display-name)
 			 list))))
-    (mapconcat 'identity (mapcar 'gplus-strip list) "\n")))
+    (dolist (func '(gplus-strip gplus-fix-links gplus-fix-line-ends))
+      (setq list (mapcar func list)))
+    (mapconcat 'identity list "\n")))
 
 (defun gplus-strip (str)
   "Remove extra stuff from the Markdown generated."
   (replace-regexp-in-string "^<br>$" "" str))
+
+(defun gplus-fix-links (str)
+  "Somehow the links have extra double quotes."
+  (replace-regexp-in-string "(\"\\(\\S-+\\)\")" "(\\1)" str))
+
+(defun gplus-fix-line-ends (str)
+  "Get rid of those two spaces at the end of lines."
+  (replace-regexp-in-string "  $" "" str))
 
 (defvar gplus-preview-mode-map
   (let ((map (make-sparse-keymap)))
