@@ -13,7 +13,7 @@ Dependencies:
 1. `markdown-mode` from MELPA
 2. `html-to-markdown` from MELPA
 3. `oddmuse-curl` if you want to post to an Oddmuse wiki
-   ([https://alexschroeder.ch/cgit/oddmuse-curl/about/ source])
+   ([source](https://alexschroeder.ch/cgit/oddmuse-curl/about/))
 
 This is what the UI looks like:
 
