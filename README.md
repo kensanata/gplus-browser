@@ -16,3 +16,19 @@ Dependencies:
 This is what the UI looks like:
 
 ![Screenshot](screenshot.png)
+
+When looking at pages before posting, I find that `visual-line-mode`
+helps. So perhaps you should enable it, too?
+
+On my blog, almost all pages are *tagged*. I added `C-c C-t` to
+simplify adding tags to pages. Add your favorite tags to this
+variable:
+
+```
+(setq oddmuse-tags '("RPG" "Old School" "RSP" "Maps"
+		     "Software" "Copyright" "Social Media"
+		     "Administration" "Programming" "Mastodon" "Trunk"
+		     "Books" "Movies" "Music" "Life" "Podcast" "Gridmapper"
+		     "Web" "Oddmuse" "Wikis" "Blogs" "Text Mapper" "Hex Describe"
+		     "Switzerland"))
+```

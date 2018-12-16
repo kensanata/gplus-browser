@@ -166,7 +166,43 @@ of absolute paths.
     (define-key map (kbd "C-c C-c") 'gplus-post-buffer)
     (define-key map (kbd "C-c C-t") 'oddmuse-tag)
     map))
-	
+
+(defvar oddmuse-tags nil
+  "Favorite tags to use for completion.
+This is used for `completing-read'. It's usually a list of
+strings.")
+
+(defun oddmuse-tag (&rest tags)
+  (interactive
+   (let ((tags nil))
+     (save-excursion
+       (goto-char (point-min))
+       (while (re-search-forward "\\[\\[tag:\\(.*?\\)\\]\\]" nil t)
+	 (setq tags (cons (match-string 1) tags))))
+     (let ((tag (completing-read "Tag: " oddmuse-tags
+				 (lambda (s)
+				   (not (member s tags))))))
+       (while (not (string= tag ""))
+	 (setq tags (cons tag tags))
+	 (setq tag (completing-read "Tag: " oddmuse-tags
+				    (lambda (s)
+				      (not (member s tags)))))))
+     tags))
+  (save-excursion
+    (when tags
+      (goto-char (point-min))
+      (when (re-search-forward "Tags:\\( \\[\\[tag:.*?\\]\\]\\)+\n" nil t)
+	(replace-match ""))
+      (goto-char (point-max))
+      ;; make sure a new paragraph starts
+      (unless (and (> (point) 1)
+		   (string= "\n\n" (buffer-substring (- (point) 2) (point))))
+	(newline (if (eq (char-before) ?\n) 1 2)))
+      (insert "Tags:")
+      (mapcar (lambda (s)
+		(insert " [[tag:" s "]]"))
+	      tags))))
+
 (define-derived-mode gplus-preview-mode markdown-mode "G+ View"
   "Major mode to view JSON files in your G+ Archive."
   (message "Edit and post when you're ready."))
