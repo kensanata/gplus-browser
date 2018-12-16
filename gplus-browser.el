@@ -164,6 +164,7 @@ of absolute paths.
   (let ((map (make-sparse-keymap)))
     (set-keymap-parent map markdown-mode-map)
     (define-key map (kbd "C-c C-c") 'gplus-post-buffer)
+    (define-key map (kbd "C-c C-t") 'oddmuse-tag)
     map))
 	
 (define-derived-mode gplus-preview-mode markdown-mode "G+ View"
