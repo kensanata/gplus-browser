@@ -28,6 +28,7 @@
 (require 'tabulated-list)
 (require 'markdown-mode)
 (require 'html-to-markdown)
+(require 'oddmuse-curl)
 
 ;; The G+ Archive buffer
 
@@ -187,4 +188,5 @@ of absolute paths.
 			  (match-string 2 gplus-file) "-"
 			  (match-string 3 gplus-file) " "))))
      (list (read-string "Page name: " date))))
-  (message "Saving: %s" name))
+  (let ((oddmuse-page-name name))
+    (call-interactively 'oddmuse-post)))
