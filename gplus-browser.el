@@ -253,3 +253,5 @@ strings.")
      (list (read-string "Page name: " date))))
   (let ((oddmuse-page-name name))
     (call-interactively 'oddmuse-post)))
+
+(provide 'gplus-browser)
