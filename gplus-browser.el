@@ -82,6 +82,9 @@ non-nil, the file is moved to the trash instead."
     (error "This only works in the *G+ Archive* buffer"))
   (tabulated-list-delete-entry)
   (delete-file file)
+  ;; move up if this was the last file
+  (when (eobp)
+    (previous-line))
   ;; and preview the next
   (gplus-preview-file))
 
