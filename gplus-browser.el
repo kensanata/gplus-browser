@@ -136,30 +136,43 @@ of absolute paths.
 	(reshared (cdr (assq 'resharedPost json)))
 	;; add comments from last to first
 	(comments (reverse (cdr (assq 'comments json))))
+	(link (cdr (assq 'link json)))
 	(list '("")))
     (dotimes (i (length comments))
       (let* ((comment (aref comments i))
 	     (author (cdr (assq 'author comment)))
 	     (display-name (or (cdr (assq 'displayName author)) "Unknown"))
-	     (text (html-to-markdown-string (cdr (assq 'content comment)))))
-	(setq list (cons (format "%s\n\n– %s\n" text display-name) list))))
-    ;; separator in front of the first comment
-    (when comments
-      (setq list (cons "\n----\n" list)))
+	     (date (cdr (assq 'creationTime comment)))
+	     (text (html-to-markdown-string (or (cdr (assq 'content comment)) ""))))
+	(setq date (if date (substring date 0 10) ("date unknown")))
+	(setq list (cons (format "%s\n\n– %s %s\n" text display-name date)
+			 list))
+	;; separator before it
+	(setq list (cons "----\n" list))))
     ;; now comes the text
     (when text
-      (setq list (cons (html-to-markdown-string text) list)))
+      (setq list (cons (format "%s\n" (html-to-markdown-string (or text ""))) list)))
     ;; reshared posts gets added to the front, in quotes
     (when reshared
       (let* ((author (cdr (assq 'author reshared)))
 	     (display-name (or (cdr (assq 'displayName author)) "Unknown"))
-	     (text (html-to-markdown-string (cdr (assq 'content reshared)))))
+	     (text (html-to-markdown-string (or (cdr (assq 'content reshared)) ""))))
 	(setq list (cons (format "[quote]\n%s\n\n– %s\n[/quote]\n"
 				 text display-name)
 			 list))))
-    (dolist (func '(gplus-strip gplus-fix-links gplus-fix-line-ends))
+    ;; and finally, the link (i.e. at the very top)
+    (when link
+      (let* ((title (cdr (assq 'title link)))
+	     (url (cdr (assq 'url link))))
+	(setq list (cons (format "[%s](%s)\n" title url)
+			 list))))
+    (dolist (func '(gplus-italic gplus-strip gplus-fix-links gplus-fix-line-ends))
       (setq list (mapcar func list)))
     (mapconcat 'identity list "\n")))
+
+(defun gplus-italic (str)
+  "Translate _foo_ into *foo*."
+  (replace-regexp-in-string "_\\([^_\n]+\\)_" "*\\1*" str))
 
 (defun gplus-strip (str)
   "Remove extra stuff from the Markdown generated."
